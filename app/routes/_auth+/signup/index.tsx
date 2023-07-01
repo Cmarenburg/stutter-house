@@ -16,20 +16,17 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from '~/components/error-boundary.tsx'
 import { ErrorList, Field } from '~/components/forms.tsx'
 import { StatusButton } from '~/components/ui/status-button.tsx'
-import { createId } from '@paralleldrive/cuid2';
+import { createId } from '@paralleldrive/cuid2'
 
-import { db } from '~/drizzle/config.server.ts';
+import { db } from '~/drizzle/config.server.ts'
 import { user, verification } from '~/drizzle/schema.server.ts'
-import { eq, and } from "drizzle-orm";
-
+import { eq, and } from 'drizzle-orm'
 
 import { sendEmail } from '~/utils/email.server.ts'
 import { getDomainUrl } from '~/utils/misc.ts'
 import { generateTOTP } from '~/utils/totp.server.ts'
 import { emailSchema } from '~/utils/user-validation.ts'
 import { SignupEmail } from './email.server.tsx'
-
-
 
 export const onboardingOTPQueryParam = 'code'
 export const onboardingEmailQueryParam = 'email'
@@ -44,11 +41,14 @@ export async function action({ request }: DataFunctionArgs) {
 	const submission = await parse(formData, {
 		schema: () => {
 			return signupSchema.superRefine(async (data, ctx) => {
-				const existingUser = await db.select({
-					id: user.id,
-				}).from(user).where(eq(user.email, data.email));
+				const existingUser = await db
+					.select({
+						id: user.id,
+					})
+					.from(user)
+					.where(eq(user.email, data.email))
 
-				console.log('existingUser', (await existingUser.all()).length);
+				console.log('existingUser', (await existingUser.all()).length)
 
 				if ((await existingUser.all()).length > 0) {
 					ctx.addIssue({
@@ -88,18 +88,28 @@ export async function action({ request }: DataFunctionArgs) {
 	// 	where: { type: verificationType, target: email },
 	// })
 
-	await db.delete(verification).where(and(eq(verification.type, verificationType),eq(verification.target, email)));
+	await db
+		.delete(verification)
+		.where(
+			and(
+				eq(verification.type, verificationType),
+				eq(verification.target, email),
+			),
+		)
 
-	await db.insert(verification).values({
-		id: createId(),
-		type: verificationType,
-		target: email,
-		algorithm,
-		secret,
-		period,
-		digits,
-		expiresAt: new Date(Date.now() + period * 1000).toISOString(),
-	}).run();
+	await db
+		.insert(verification)
+		.values({
+			id: createId(),
+			type: verificationType,
+			target: email,
+			algorithm,
+			secret,
+			period,
+			digits,
+			expiresAt: new Date(Date.now() + period * 1000).toISOString(),
+		})
+		.run()
 
 	const onboardingUrl = new URL(`${getDomainUrl(request)}/signup/verify`)
 	onboardingUrl.searchParams.set(onboardingEmailQueryParam, email)

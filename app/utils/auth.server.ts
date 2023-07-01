@@ -38,14 +38,20 @@ authenticator.use(
 		}
 		// const session = await prisma.session.create({
 
-		const ssn = await db.insert(session).values({
-			id: createId(),
-			userId: user.id as string,
-			expirationDate: new Date(Date.now() + SESSION_EXPIRATION_TIME).toISOString(),
-			createdAt: new Date().toISOString(),
-		}).returning().run();
+		const ssn = await db
+			.insert(session)
+			.values({
+				id: createId(),
+				userId: user.id as string,
+				expirationDate: new Date(
+					Date.now() + SESSION_EXPIRATION_TIME,
+				).toISOString(),
+				createdAt: new Date().toISOString(),
+			})
+			.returning()
+			.run()
 
-		console.log(ssn);
+		console.log(ssn)
 
 		return ssn.rows[0].id as string
 	}),
@@ -75,7 +81,9 @@ export async function requireUserId(
 	// 	select: { userId: true, expirationDate: true },
 	// })
 
-	const ssn = (await db.select().from(session).where(eq(session.id, sessionId)).run()).rows[0];
+	const ssn = (
+		await db.select().from(session).where(eq(session.id, sessionId)).run()
+	).rows[0]
 
 	if (!ssn) {
 		throw redirect(failureRedirect)
@@ -90,14 +98,16 @@ export async function getUserId(request: Request) {
 	// 	where: { id: sessionId },
 	// 	select: { userId: true },
 	// })
-	const ssn = (await db.select().from(session).where(eq(session.id, sessionId)).run()).rows[0];
+	const ssn = (
+		await db.select().from(session).where(eq(session.id, sessionId)).run()
+	).rows[0]
 	if (!ssn) {
 		// Perhaps their session was deleted?
 		await authenticator.logout(request, { redirectTo: '/' })
 		return null
 	}
 
-	console.log(ssn.userId);
+	console.log(ssn.userId)
 	return ssn.userId
 }
 
@@ -126,9 +136,13 @@ export async function resetUserPassword({
 	// 	},
 	// })
 
-	return await db.update(pass).set({
-		hash: hashedPassword,
-	}).where(eq(pass.userId, user.id)).run();
+	return await db
+		.update(pass)
+		.set({
+			hash: hashedPassword,
+		})
+		.where(eq(pass.userId, user.id))
+		.run()
 }
 
 export async function signup({
@@ -144,31 +158,43 @@ export async function signup({
 }) {
 	const hashedPassword = await getPasswordHash(password)
 
-	const usr = await db.insert(user).values({
-		id: createId(),
-		email,
-		username,
-		name,
-		updatedAt: new Date().toISOString(),
-		createdAt: new Date().toISOString(),
-	}).returning({
-		id: user.id,
-	}).run();
+	const usr = await db
+		.insert(user)
+		.values({
+			id: createId(),
+			email,
+			username,
+			name,
+			updatedAt: new Date().toISOString(),
+			createdAt: new Date().toISOString(),
+		})
+		.returning({
+			id: user.id,
+		})
+		.run()
 
-	await db.insert(pass).values({
-		hash: hashedPassword,
-		userId: usr.rows[0].id as string,
-	}).run();
+	await db
+		.insert(pass)
+		.values({
+			hash: hashedPassword,
+			userId: usr.rows[0].id as string,
+		})
+		.run()
 
+	const Session = await db
+		.insert(session)
+		.values({
+			id: createId(),
+			userId: usr.rows[0].id as string,
+			expirationDate: new Date(
+				Date.now() + SESSION_EXPIRATION_TIME,
+			).toISOString(),
+			createdAt: new Date().toISOString(),
+		})
+		.returning()
+		.run()
 
-	const Session = await db.insert(session).values({
-		id: createId(),
-		userId: usr.rows[0].id as string,
-		expirationDate: new Date(Date.now() + SESSION_EXPIRATION_TIME).toISOString(),
-		createdAt: new Date().toISOString(),
-	}).returning().run();
-
-	return Session.rows[0];
+	return Session.rows[0]
 }
 
 export async function getPasswordHash(password: string) {
@@ -180,16 +206,25 @@ export async function verifyLogin(
 	username: User['username'],
 	password: Password['hash'],
 ) {
-	const userWithPassword = (await db.select().from(user).fullJoin(pass, eq(user.id, pass.userId)).where(eq(user.username, username)).run()).rows[0];
+	const userWithPassword = (
+		await db
+			.select()
+			.from(user)
+			.fullJoin(pass, eq(user.id, pass.userId))
+			.where(eq(user.username, username))
+			.run()
+	).rows[0]
 
-
-	console.log(userWithPassword);
+	console.log(userWithPassword)
 
 	if (!userWithPassword || !userWithPassword.hash) {
 		return null
 	}
 
-	const isValid = await bcrypt.compare(password, userWithPassword.hash as string)
+	const isValid = await bcrypt.compare(
+		password,
+		userWithPassword.hash as string,
+	)
 
 	if (!isValid) {
 		console.log('invalid password')

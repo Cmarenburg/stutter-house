@@ -84,9 +84,7 @@ async function validate(request: Request, body: URLSearchParams | FormData) {
 						),
 					)
 					.limit(1)
-					.get();
-
-
+					.get()
 
 				if (!verificationToken) {
 					ctx.addIssue({
@@ -97,7 +95,7 @@ async function validate(request: Request, body: URLSearchParams | FormData) {
 					return
 				}
 
-				console.log('verificationToken', verificationToken);
+				console.log('verificationToken', verificationToken)
 
 				const result = verifyTOTP({
 					otp: data.code,

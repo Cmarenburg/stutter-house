@@ -17,24 +17,15 @@ import { useOptionalUser } from '~/utils/user.ts'
 
 export async function loader({ params }: DataFunctionArgs) {
 	invariant(params.username, 'Missing username')
-	// const user = await prisma.user.findUnique({
-	// 	where: { username: params.username },
-	// 	select: {
-	// 		id: true,
-	// 		username: true,
-	// 		name: true,
-	// 		imageId: true,
-	// 		createdAt: true,
-	// 	},
-	// })
 
-	const user = await (await db.select().from(usr).where(eq(usr.username, params.username)).run()).rows[0]
-
+	const user = await (
+		await db.select().from(usr).where(eq(usr.username, params.username)).run()
+	).rows[0]
 
 	if (!user) {
 		throw new Response('not found', { status: 404 })
 	}
-	return json({ user, userJoinedDisplay: user.createdAt})
+	return json({ user, userJoinedDisplay: user.createdAt })
 }
 
 export default function UsernameIndex() {

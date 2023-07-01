@@ -71,11 +71,21 @@ export async function action({ request }: DataFunctionArgs) {
 		throw error
 	}
 
-	const ssn = await (await db.select().from(session).where(eq(session.id, sessionId)).run());
+	const ssn = await await db
+		.select()
+		.from(session)
+		.where(eq(session.id, sessionId))
+		.run()
 
-	console.log(ssn.rows[0]);
+	console.log(ssn.rows[0])
 
-	const user2FA = await (await db.select().from(verification).where(eq(verification.type, twoFAVerificationType)).run()).rows[0];
+	const user2FA = await (
+		await db
+			.select()
+			.from(verification)
+			.where(eq(verification.type, twoFAVerificationType))
+			.run()
+	).rows[0]
 
 	const cookieSession = await getSession(request.headers.get('cookie'))
 	const keyToSet = user2FA ? unverifiedSessionKey : authenticator.sessionKey

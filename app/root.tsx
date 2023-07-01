@@ -97,8 +97,15 @@ export async function loader({ request }: DataFunctionArgs) {
 	// 	  )
 	// 	: null
 
-	const user = userId ? (await db.select().from(usr).where(eq(usr.id, userId as string)).run()).rows[0] : null
-
+	const user = userId
+		? (
+				await db
+					.select()
+					.from(usr)
+					.where(eq(usr.id, userId as string))
+					.run()
+		  ).rows[0]
+		: null
 
 	if (userId && !user) {
 		console.info('something weird happened')

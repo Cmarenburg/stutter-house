@@ -10,17 +10,17 @@ export async function setup() {
 }
 
 async function ensureDbReady() {
-	if (!(await fsExtra.pathExists(BASE_DATABASE_PATH))) {
-		await execaCommand(
-			'prisma migrate reset --force --skip-seed --skip-generate',
-			{
-				stdio: 'inherit',
-				env: {
-					...process.env,
-					DATABASE_PATH: BASE_DATABASE_PATH,
-					DATABASE_URL: BASE_DATABASE_URL,
-				},
-			},
-		)
-	}
+	// if (!(await fsExtra.pathExists(BASE_DATABASE_PATH))) {
+	// 	await execaCommand(
+	// 		'prisma migrate reset --force --skip-seed --skip-generate',
+	// 		{
+	// 			stdio: 'inherit',
+	// 			env: {
+	// 				...process.env,
+	// 				DATABASE_PATH: BASE_DATABASE_PATH,
+	// 				DATABASE_URL: BASE_DATABASE_URL,
+	// 			},
+	// 		},
+	// 	)
+	// }
 }

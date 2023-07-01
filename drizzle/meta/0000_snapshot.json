@@ -29,12 +29,8 @@
           "name": "role_permission_permissionId_permission_id_fk",
           "tableFrom": "role_permission",
           "tableTo": "permission",
-          "columnsFrom": [
-            "permissionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["permissionId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -42,12 +38,8 @@
           "name": "role_permission_roleId_role_id_fk",
           "tableFrom": "role_permission",
           "tableTo": "role",
-          "columnsFrom": [
-            "roleId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["roleId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -152,12 +144,8 @@
           "name": "password_userId_User_id_fk",
           "tableFrom": "password",
           "tableTo": "User",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -275,12 +263,8 @@
           "name": "session_userId_User_id_fk",
           "tableFrom": "session",
           "tableTo": "User",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -362,12 +346,8 @@
           "name": "user_role_roleId_role_id_fk",
           "tableFrom": "user_role",
           "tableTo": "role",
-          "columnsFrom": [
-            "roleId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["roleId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -375,12 +355,8 @@
           "name": "user_role_userId_User_id_fk",
           "tableFrom": "user_role",
           "tableTo": "User",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }

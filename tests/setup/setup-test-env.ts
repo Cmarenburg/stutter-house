@@ -6,7 +6,7 @@ import 'dotenv/config'
 import fs from 'fs'
 import { BASE_DATABASE_PATH, DATABASE_PATH } from './paths.ts'
 import { deleteAllData } from './utils.ts'
-import { prisma } from '~/utils/db.server.ts'
+// import { prisma } from '~/utils/db.server.ts'
 
 expect.extend(matchers)
 
@@ -16,6 +16,6 @@ fs.copyFileSync(BASE_DATABASE_PATH, DATABASE_PATH)
 afterEach(() => deleteAllData())
 
 afterAll(async () => {
-	await prisma.$disconnect()
+	// await prisma.$disconnect()
 	await fs.promises.rm(DATABASE_PATH)
 })
